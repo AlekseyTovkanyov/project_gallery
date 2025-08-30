@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.first_name }} {{ profile_user.last_name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ profile_user.first_name }} {{ profile_user.last_name }}</h1>
+            {% if is_own_profile %}
+                <p class="text-muted">Это ваш профиль</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>Альбомы</h3>
+            {% if user_albums %}
+                <div class="row">
+                    {% for album in user_albums %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{% url 'webapp:album_detail' album.pk %}">{{ album.title }}</a>
+                                    </h5>
+                                    {% if album.description %}
+                                        <p class="card-text">{{ album.description|truncatewords:20 }}</p>
+                                    {% endif %}
+                                    <small class="text-muted">{{ album.created_at|date:"d.m.Y" }}</small>
+                                    {% if not album.is_public %}
+                                        <span class="badge bg-warning">Приватный</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Альбомов пока нет</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>Фотографии вне альбомов</h3>
+            {% if user_photos_without_album %}
+                <div class="row">
+                    {% for photo in user_photos_without_album %}
+                        <div class="col-md-3 mb-4">
+                            <div class="card">
+                                <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}"
+                                     style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h6>{{ photo.caption }}</h6>
+                                    <small class="text-muted">{{ photo.created_at|date:"d.m.Y" }}</small>
+                                    {% if not photo.is_public %}
+                                        <span class="badge bg-warning">Приватная</span>
+                                    {% endif %}
+                                    <div class="mt-2">
+                                        <a href="{% url 'webapp:photo_detail' photo.pk %}"
+                                           class="btn btn-sm btn-primary">Подробнее</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Фотографий вне альбомов пока нет</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if show_favorites %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3><a href="#" class="text-decoration-none">Избранное</a></h3>
+
+                {% if favorite_albums %}
+                    <h5>Альбомы</h5>
+                    <div class="row">
+                        {% for album in favorite_albums %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <a href="{% url 'webapp:album_detail' album.pk %}">{{ album.title }}</a>
+                                        </h6>
+                                        <small class="text-muted">{{ album.author.first_name }} {{ album.author.last_name }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if favorite_photos %}
+                    <h5>Фотографии</h5>
+                    <div class="row">
+                        {% for photo in favorite_photos %}
+                            <div class="col-md-3 mb-4">
+                                <div class="card">
+                                    <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}"
+                                         style="height: 200px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h6>{{ photo.caption }}</h6>
+                                        <small class="text-muted">{{ photo.author.first_name }} {{ photo.author.last_name }}</small>
+                                        <div class="mt-2">
+                                            <a href="{% url 'webapp:photo_detail' photo.pk %}"
+                                               class="btn btn-sm btn-primary">Подробнее</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if not favorite_albums and not favorite_photos %}
+                    <p>В избранном пока ничего нет</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="mt-3">
+        <a href="{% url 'webapp:photo_list' %}" class="btn btn-secondary">Назад к галерее</a>
+    </div>
+{% endblock %}

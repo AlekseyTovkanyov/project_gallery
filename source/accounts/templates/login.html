@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h3 class="text-center mb-4">Вход в систему</h3>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">Логин</label>
+                    <input type="text"
+                           class="form-control{% if form.username.errors %} is-invalid{% endif %}"
+                           name="{{ form.username.name }}"
+                           id="{{ form.username.id_for_label }}"
+                           placeholder="Введите логин"
+                           value="{{ form.username.value|default_if_none:'' }}">
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">Пароль</label>
+                    <input type="password"
+                           class="form-control{% if form.password.errors %} is-invalid{% endif %}"
+                           name="{{ form.password.name }}"
+                           id="{{ form.password.id_for_label }}"
+                           placeholder="Введите пароль">
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+
+                <div class="text-center mt-3">
+                    <p>Нет аккаунта? <a href="{% url 'accounts:register' %}">Зарегистрироваться</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

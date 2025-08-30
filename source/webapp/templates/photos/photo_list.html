@@ -14,7 +14,8 @@
                             <h6>{{ photo.caption }}</h6>
                             <small class="text-muted">
                                 {% if user.is_authenticated %}
-                                    Автор: <a href="#">{{ photo.author.first_name }} {{ photo.author.last_name }}</a>
+                                    Автор:
+                                    <a href="{% url 'accounts:profile' photo.author.id %}">{{ photo.author.first_name }} {{ photo.author.last_name }}</a>
                                     <br>
                                     {% if photo.album %}
                                         Альбом:
