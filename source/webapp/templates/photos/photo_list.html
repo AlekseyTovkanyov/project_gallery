@@ -31,6 +31,23 @@
                             {% if user.is_authenticated %}
                                 <div class="mt-2">
                                     <a href="{% url 'webapp:photo_detail' photo.pk %}" class="btn btn-sm btn-primary">Подробнее</a>
+                                    {% if photo.is_public %}
+                                        {% if user in photo.favorite.all %}
+                                            <button class="btn btn-sm btn-danger"
+                                                    data-js="favorite-button"
+                                                    data-photo-id="{{ photo.pk }}"
+                                                    data-action="remove">
+                                                Удалить из избранного
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-success"
+                                                    data-js="favorite-button"
+                                                    data-photo-id="{{ photo.pk }}"
+                                                    data-action="add">
+                                                Добавить в избранное
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
                                 </div>
                             {% endif %}
                         </div>

@@ -1,0 +1,96 @@
+[
+{
+  "model": "webapp.photo",
+  "pk": 1,
+  "fields": {
+    "image": "photos/99px_ru_avatar_83057_ironija_sudbi_ili_s_legkim_parom_ippolit_ippolit.gif",
+    "caption": "...",
+    "created_at": "2025-08-30T11:17:58.088Z",
+    "author": 2,
+    "album": 1,
+    "is_public": true,
+    "access_token": null,
+    "favorite": []
+  }
+},
+{
+  "model": "webapp.photo",
+  "pk": 3,
+  "fields": {
+    "image": "photos/99px_ru_avatar_69302_mjagkov_breetsja_ironija_sudbi.gif",
+    "caption": "...!",
+    "created_at": "2025-08-30T11:22:30.888Z",
+    "author": 2,
+    "album": null,
+    "is_public": true,
+    "access_token": "28de3927-ec86-4698-b222-1d8b043019a6",
+    "favorite": []
+  }
+},
+{
+  "model": "webapp.photo",
+  "pk": 4,
+  "fields": {
+    "image": "photos/99px_ru_avatar_82741_ironija_sudbi_jenja_evgenij_mihajlovich_lukashin.gif",
+    "caption": "!!",
+    "created_at": "2025-08-30T11:22:43.436Z",
+    "author": 2,
+    "album": null,
+    "is_public": false,
+    "access_token": "e392a25d-8160-487a-b058-e256dcafe654",
+    "favorite": []
+  }
+},
+{
+  "model": "webapp.photo",
+  "pk": 5,
+  "fields": {
+    "image": "photos/38A16C8D0B07-55_RteFLhD.gif",
+    "caption": "987",
+    "created_at": "2025-08-30T11:24:26.766Z",
+    "author": 3,
+    "album": null,
+    "is_public": true,
+    "access_token": null,
+    "favorite": []
+  }
+},
+{
+  "model": "webapp.photo",
+  "pk": 6,
+  "fields": {
+    "image": "photos/99px_ru_avatar_69302_mjagkov_breetsja_ironija_sudbi_0zgCfXY.gif",
+    "caption": "приватное",
+    "created_at": "2025-08-30T11:39:34.612Z",
+    "author": 2,
+    "album": 3,
+    "is_public": false,
+    "access_token": null,
+    "favorite": []
+  }
+},
+{
+  "model": "webapp.album",
+  "pk": 1,
+  "fields": {
+    "title": "тест",
+    "description": "",
+    "author": 2,
+    "created_at": "2025-08-30T11:20:34.209Z",
+    "is_public": true,
+    "favorite": []
+  }
+},
+{
+  "model": "webapp.album",
+  "pk": 3,
+  "fields": {
+    "title": "приватный",
+    "description": "",
+    "author": 2,
+    "created_at": "2025-08-30T11:39:02.716Z",
+    "is_public": false,
+    "favorite": []
+  }
+}
+]
