@@ -49,14 +49,29 @@
                     </p>
                 {% endif %}
 
-                {% if user == photo.author or perms.webapp.change_photo %}
+                {% if user.is_authenticated and user == photo.author %}
                     <div class="mt-3">
-                        <a href="{% url 'webapp:photo_edit' photo.pk %}" class="btn btn-warning">Редактировать</a>
-                    </div>
-                {% endif %}
-                {% if user == photo.author or perms.webapp.delete_photo %}
-                    <div class="mt-1">
-                        <a href="{% url 'webapp:photo_delete' photo.pk %}" class="btn btn-danger">Удалить</a>
+                        {% if user == photo.author or perms.webapp.change_photo %}
+                            <a href="{% url 'webapp:photo_edit' photo.pk %}" class="btn btn-warning">Редактировать</a>
+                        {% endif %}
+                        {% if user == photo.author or perms.webapp.delete_photo %}
+                            <a href="{% url 'webapp:photo_delete' photo.pk %}" class="btn btn-danger">Удалить</a>
+                        {% endif %}
+
+                        {% if not photo.access_token %}
+                            <a href="{% url 'webapp:generate_token' photo.pk %}" class="btn btn-info">Создать ссылку
+                                доступа</a>
+                        {% else %}
+                            <div class="mt-3 p-3 bg-light border rounded">
+                                <strong>Ссылка доступа:</strong>
+                                <br>
+                                <a href="{% url 'webapp:photo_by_token' token=photo.access_token %}">
+                                    http://localhost:8000{% url 'webapp:photo_by_token' token=photo.access_token %}</a>
+                                <br>
+                                <small class="text-muted">Эта ссылка позволяет просматривать фотографию без
+                                    авторизации</small>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>
@@ -64,6 +79,17 @@
 
         <div class="mt-3">
             <a href="{% url 'webapp:photo_list' %}" class="btn btn-secondary">Назад к галерее</a>
+            {% if photo.album and user.is_authenticated %}
+                {% if photo.album.is_public or photo.album.author == user %}
+                    <a href="{% url 'webapp:album_detail' photo.album.pk %}" class="btn btn-info">К альбому</a>
+                {% endif %}
+            {% endif %}
         </div>
+
+        {% if token_access %}
+            <div class="alert alert-info mt-3">
+                Вы просматриваете эту фотографию по специальной ссылке доступа.
+            </div>
+        {% endif %}
     {% endif %}
 {% endblock %}

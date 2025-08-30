@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404, redirect
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
@@ -78,3 +80,30 @@ class PhotoDeleteView(PermissionRequiredMixin, DeleteView):
     def has_permission(self):
         photo = self.get_object()
         return super().has_permission() or self.request.user == photo.author
+
+
+class PhotoByTokenView(DetailView):
+    model = Photo
+    template_name = 'photos/photo_detail.html'
+    context_object_name = 'photo'
+
+    def get_object(self):
+        token = self.kwargs['token']
+        photo = get_object_or_404(Photo, access_token=token)
+        return photo
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        photo = self.get_object()
+        context['favorited_users'] = photo.favorite.all()
+        context['token_access'] = True
+        return context
+
+
+class GenerateTokenView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        photo = get_object_or_404(Photo, pk=pk)
+        if photo.author != request.user:
+            return redirect('webapp:photo_detail', pk=pk)
+        photo.generate_access_token()
+        return redirect('webapp:photo_detail', pk=pk)
