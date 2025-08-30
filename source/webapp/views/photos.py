@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 
 from webapp.forms import PhotoForm
@@ -48,13 +48,15 @@ class PhotoCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PhotoUpdateView(LoginRequiredMixin, UpdateView):
+class PhotoUpdateView(PermissionRequiredMixin, UpdateView):
     model = Photo
     form_class = PhotoForm
     template_name = 'photos/photo_form.html'
+    permission_required = 'webapp.change_photo'
 
-    def get_queryset(self):
-        return Photo.objects.filter(author=self.request.user)
+    def has_permission(self):
+        photo = self.get_object()
+        return super().has_permission() or self.request.user == photo.author
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -67,10 +69,12 @@ class PhotoUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class PhotoDeleteView(LoginRequiredMixin, DeleteView):
+class PhotoDeleteView(PermissionRequiredMixin, DeleteView):
     model = Photo
     template_name = 'photos/photo_confirm_delete.html'
     success_url = reverse_lazy('webapp:photo_list')
+    permission_required = 'webapp.delete_photo'
 
-    def get_queryset(self):
-        return Photo.objects.filter(author=self.request.user)
+    def has_permission(self):
+        photo = self.get_object()
+        return super().has_permission() or self.request.user == photo.author

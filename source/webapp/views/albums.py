@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 
 from webapp.forms import AlbumForm
@@ -41,13 +41,15 @@ class AlbumCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class AlbumUpdateView(LoginRequiredMixin, UpdateView):
+class AlbumUpdateView(PermissionRequiredMixin, UpdateView):
     model = Album
     form_class = AlbumForm
     template_name = 'albums/album_form.html'
+    permission_required = 'webapp.change_album'
 
-    def get_queryset(self):
-        return Album.objects.filter(author=self.request.user)
+    def has_permission(self):
+        album = self.get_object()
+        return super().has_permission() or self.request.user == album.author
 
     def form_valid(self, form):
         old_album = Album.objects.get(pk=self.object.pk)
@@ -57,10 +59,12 @@ class AlbumUpdateView(LoginRequiredMixin, UpdateView):
         return response
 
 
-class AlbumDeleteView(LoginRequiredMixin, DeleteView):
+class AlbumDeleteView(PermissionRequiredMixin, DeleteView):
     model = Album
     template_name = 'albums/album_confirm_delete.html'
     success_url = reverse_lazy('webapp:photo_list')
+    permission_required = 'webapp.delete_album'
 
-    def get_queryset(self):
-        return Album.objects.filter(author=self.request.user)
+    def has_permission(self):
+        album = self.get_object()
+        return super().has_permission() or self.request.user == album.author

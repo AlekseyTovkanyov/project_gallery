@@ -14,11 +14,21 @@
                 {% if album.description %}
                     <p>{{ album.description }}</p>
                 {% endif %}
-                <p class="text-muted">Автор: {{ album.author.first_name }} {{ album.author.last_name }}</p>
+                <p class="text-muted">Автор:
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'accounts:profile' album.author.id %}">{{ album.author.first_name }} {{ album.author.last_name }}</a>
+                    {% else %}
+                        {{ album.author.first_name }} {{ album.author.last_name }}
+                    {% endif %}
+                </p>
             </div>
-            {% if user == album.author %}
+            {% if user == album.author or perms.webapp.change_album %}
                 <div>
                     <a href="{% url 'webapp:album_edit' album.pk %}" class="btn btn-warning">Редактировать</a>
+                </div>
+            {% endif %}
+            {% if user == album.author or perms.webapp.delete_album %}
+                <div>
                     <a href="{% url 'webapp:album_delete' album.pk %}" class="btn btn-danger">Удалить</a>
                 </div>
             {% endif %}

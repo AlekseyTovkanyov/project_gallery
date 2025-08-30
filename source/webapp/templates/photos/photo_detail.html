@@ -14,25 +14,48 @@
             </div>
             <div class="col-md-4">
                 <h4>{{ photo.caption }}</h4>
-                <p><strong>Автор:</strong> <a href="#">{{ photo.author.first_name }} {{ photo.author.last_name }}</a>
+                <p><strong>Автор:</strong>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'accounts:profile' photo.author.id %}">{{ photo.author.first_name }} {{ photo.author.last_name }}</a>
+                    {% else %}
+                        {{ photo.author.first_name }} {{ photo.author.last_name }}
+                    {% endif %}
                 </p>
                 {% if photo.album %}
-                    <p><strong>Альбом:</strong> <a
-                            href="{% url 'webapp:album_detail' photo.album.pk %}">{{ photo.album.title }}</a></p>
+                    <p><strong>Альбом:</strong>
+                        {% if user.is_authenticated %}
+                            {% if photo.album.is_public or photo.album.author == user %}
+                                <a href="{% url 'webapp:album_detail' photo.album.pk %}">{{ photo.album.title }}</a>
+                            {% else %}
+                                {{ photo.album.title }}
+                            {% endif %}
+                        {% else %}
+                            {{ photo.album.title }}
+                        {% endif %}
+                    </p>
                 {% endif %}
                 <p><strong>Дата:</strong> {{ photo.created_at|date:"d.m.Y H:i" }}</p>
 
                 {% if favorited_users %}
                     <p><strong>В избранном у:</strong>
-                        {% for user in favorited_users %}
-                            <a href="#" class="badge bg-info">{{ user.first_name }} {{ user.last_name }}</a>
+                        {% for fav_user in favorited_users %}
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'accounts:profile' fav_user.id %}"
+                                   class="badge bg-info">{{ fav_user.first_name }} {{ fav_user.last_name }}</a>
+                            {% else %}
+                                <span class="badge bg-info">{{ fav_user.first_name }} {{ fav_user.last_name }}</span>
+                            {% endif %}
                         {% endfor %}
                     </p>
                 {% endif %}
 
-                {% if user == photo.author %}
+                {% if user == photo.author or perms.webapp.change_photo %}
                     <div class="mt-3">
                         <a href="{% url 'webapp:photo_edit' photo.pk %}" class="btn btn-warning">Редактировать</a>
+                    </div>
+                {% endif %}
+                {% if user == photo.author or perms.webapp.delete_photo %}
+                    <div class="mt-1">
                         <a href="{% url 'webapp:photo_delete' photo.pk %}" class="btn btn-danger">Удалить</a>
                     </div>
                 {% endif %}
