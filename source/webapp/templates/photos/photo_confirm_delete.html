@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Удалить фотографию</h3>
+
+    <div class="mb-3">
+        <img src="{{ photo.image.url }}" class="img-thumbnail" style="max-width: 300px;">
+    </div>
+
+    <p>Вы действительно хотите удалить фотографию "{{ photo.caption }}"?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a href="{% url 'webapp:photo_detail' photo.pk %}" class="btn btn-secondary">Отмена</a>
+    </form>
+{% endblock %}

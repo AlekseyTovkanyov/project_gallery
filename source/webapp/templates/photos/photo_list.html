@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Галерея фотографий</h1>
+
+    {% if photos %}
+        <div class="row">
+            {% for photo in photos %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}"
+                             style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h6>{{ photo.caption }}</h6>
+                            <small class="text-muted">
+                                {% if user.is_authenticated %}
+                                    Автор: <a href="#">{{ photo.author.first_name }} {{ photo.author.last_name }}</a>
+                                    <br>
+                                    {% if photo.album %}
+                                        Альбом:
+                                        <a href="{% url 'webapp:album_detail' photo.album.pk %}">{{ photo.album.title }}</a>
+                                        <br>
+                                    {% endif %}
+                                {% else %}
+                                    Автор: {{ photo.author.first_name }} {{ photo.author.last_name }}<br>
+                                    {% if photo.album %}Альбом: {{ photo.album.title }}<br>{% endif %}
+                                {% endif %}
+                                {{ photo.created_at|date:"d.m.Y" }}
+                            </small>
+                            {% if user.is_authenticated %}
+                                <div class="mt-2">
+                                    <a href="{% url 'webapp:photo_detail' photo.pk %}" class="btn btn-sm btn-primary">Подробнее</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% include 'partial/pagination.html' %}
+    {% else %}
+        <p>Фотографий пока нет</p>
+    {% endif %}
+{% endblock %}

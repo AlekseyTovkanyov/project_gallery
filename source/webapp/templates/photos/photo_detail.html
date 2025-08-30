@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if no_access %}
+        <div class="alert alert-warning">
+            <h4>Доступ ограничен</h4>
+            <p>Эта фотография приватная.</p>
+            <a href="{% url 'webapp:photo_list' %}" class="btn btn-primary">Назад к галерее</a>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-8">
+                <img src="{{ photo.image.url }}" class="img-fluid" alt="{{ photo.caption }}">
+            </div>
+            <div class="col-md-4">
+                <h4>{{ photo.caption }}</h4>
+                <p><strong>Автор:</strong> <a href="#">{{ photo.author.first_name }} {{ photo.author.last_name }}</a>
+                </p>
+                {% if photo.album %}
+                    <p><strong>Альбом:</strong> <a
+                            href="{% url 'webapp:album_detail' photo.album.pk %}">{{ photo.album.title }}</a></p>
+                {% endif %}
+                <p><strong>Дата:</strong> {{ photo.created_at|date:"d.m.Y H:i" }}</p>
+
+                {% if favorited_users %}
+                    <p><strong>В избранном у:</strong>
+                        {% for user in favorited_users %}
+                            <a href="#" class="badge bg-info">{{ user.first_name }} {{ user.last_name }}</a>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+
+                {% if user == photo.author %}
+                    <div class="mt-3">
+                        <a href="{% url 'webapp:photo_edit' photo.pk %}" class="btn btn-warning">Редактировать</a>
+                        <a href="{% url 'webapp:photo_delete' photo.pk %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a href="{% url 'webapp:photo_list' %}" class="btn btn-secondary">Назад к галерее</a>
+        </div>
+    {% endif %}
+{% endblock %}

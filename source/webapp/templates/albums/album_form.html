@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>{% if form.instance.pk %}Редактирование альбома{% else %}Создать альбом{% endif %}</h3>
+
+    <form method="post">
+        {% include 'partial/form.html' with button_text='Сохранить' %}
+        <a href="{% url 'webapp:photo_list' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+{% endblock %}
